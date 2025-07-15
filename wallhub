@@ -10,12 +10,12 @@ local sigmawindow = sigma:MakeWindow({
 
 local Tab1 = sigmawindow:MakeTab({ Name = "Main", Icon = "rbxassetid://4483345998", PremiumOnly = false })
 local Tab2 = sigmawindow:MakeTab({ Name = "Player", Icon = "rbxassetid://4483345998", PremiumOnly = false })
-local Tab3 = sigmawindow:MakeTab({ Name = "test", Icon = "rbxassetid://4483345998", PremiumOnly = false })
-local Tab4 = sigmawindow:MakeTab({ Name = "test", Icon = "rbxassetid://4483345998", PremiumOnly = false })
+local Tab3 = sigmawindow:MakeTab({ Name = "Troll", Icon = "rbxassetid://4483345998", PremiumOnly = false })
+local Tab4 = sigmawindow:MakeTab({ Name = "Server", Icon = "rbxassetid://4483345998", PremiumOnly = false })
 
 -- Tab1 - Scripts/Universal Hub's
 -- Tab2 - LocalPlayer
--- Tab3 - Trolling
+-- Tab3 - Troll
 -- Tab4 - Server + Infos
 
 Tab1:AddButton({ Name = "destroy", Callback = function() OrionLib:Destroy()end })
