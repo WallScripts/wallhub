@@ -18,6 +18,6 @@ local Tab4 = sigmawindow:MakeTab({ Name = "Server", Icon = "rbxassetid://4483345
 -- Tab3 - Troll
 -- Tab4 - Server + Infos
 
-Tab1:AddButton({ Name = "destroy", Callback = function() OrionLib:Destroy()end })
+Tab1:AddButton({ Name = "destroy", Callback = function() OrionLib:Destroy() end })
 
 OrionLib:Init()
