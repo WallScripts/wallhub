@@ -1,11 +1,25 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+
+local Noclipping = nil
+local Clip = true
+
+
 local sigma = loadstring(game:HttpGet("https://raw.githubusercontent.com/WallScripts/library/refs/heads/main/Orion(pe).luau"))()
 
 local sigmawindow = sigma:MakeWindow({
     Name = "WallHub",
     HidePremium = false,
     SaveConfig = false,
+    ConfigFolder = "WallHub_Configs",
     IntroEnabled = true,
-    IntroText = "blablablablebleble"
+    IntroText = "blablablablebleble",
+    IntroIcon = "rbxassetid://4483345998",
+    Icon = "rbxassetid://4483345998",
+    CloseCallback = function()
+        print("[wb]: closed")
+    end
 })
 
 local Tab1 = sigmawindow:MakeTab({ Name = "Main", Icon = "rbxassetid://4483345998", PremiumOnly = false })
@@ -13,11 +27,332 @@ local Tab2 = sigmawindow:MakeTab({ Name = "Player", Icon = "rbxassetid://4483345
 local Tab3 = sigmawindow:MakeTab({ Name = "Troll", Icon = "rbxassetid://4483345998", PremiumOnly = false })
 local Tab4 = sigmawindow:MakeTab({ Name = "Server", Icon = "rbxassetid://4483345998", PremiumOnly = false })
 
--- Tab1 - Scripts/Universal Hub's
--- Tab2 - LocalPlayer
--- Tab3 - Troll
--- Tab4 - Server + Infos
+local function AddScript(tab, name, url)
+    tab:AddButton({
+        Name = name,
+        Callback = function()
+            local success, result = pcall(function()
+                return game:HttpGet(url)
+            end)
+            
+            if success and result then
+                local loadSuccess, loadResult = pcall(function()
+                    return loadstring(result)()
+                end)
+                
+                if not loadSuccess then
+                    local getSuccess, getResult = pcall(function()
+                        return game:GetService("HttpService"):GetAsync(url)
+                    end)
+                    
+                    if getSuccess and getResult then
+                        pcall(function()
+                            loadstring(getResult)()
+                        end)
+                    end
+                end
+            else
+                local getSuccess, getResult = pcall(function()
+                    return game:GetService("HttpService"):GetAsync(url)
+                end)
+                
+                if getSuccess and getResult then
+                    pcall(function()
+                        loadstring(getResult)()
+                    end)
+                end
+            end
+        end    
+    })
+end
 
-Tab1:AddButton({ Name = "destroy", Callback = function() OrionLib:Destroy() end })
+Tab1:AddParagraph("Top Scripts","Minha seleção pessoal dos melhores scripts/Hub's")
+Tab1:AddSection({ Name = "" })
 
-OrionLib:Init()
+Tab1:AddParagraph("Admin Cmds Script","Transforme-se em \"admin\" com centenas de comandos úteis disponíveis.")
+
+AddScript(Tab1, "Infinite Yield FE", "https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source")
+AddScript(Tab1, "QuirkyCMD", "https://gist.github.com/someunknowndude/38cecea5be9d75cb743eac8b1eaf6758/raw")
+AddScript(Tab1, "Fates Admin", "https://raw.githubusercontent.com/fatesc/fates-admin/main/main.lua")
+AddScript(Tab1, "Nameless Admin", "https://raw.githubusercontent.com/ltseverydayyou/Nameless-Admin/main/Source.lua")
+
+Tab1:AddSection({ Name = "" })
+Tab1:AddParagraph("Debug Scripts","Ferramentas essenciais para análise e fazer o seu próprio script investigando como o jogo funciona.")
+
+AddScript(Tab1, "Dex", "https://raw.githubusercontent.com/infyiff/backup/main/dex.lua")
+AddScript(Tab1, "Simple Spy/Remote Spy", "https://raw.githubusercontent.com/infyiff/backup/main/SimpleSpyV3/main.lua")
+AddScript(Tab1, "Octo Spy", "https://raw.githubusercontent.com/InfernusScripts/Octo-Spy/refs/heads/main/Main.lua")
+AddScript(Tab1, "Http Spy", "https://raw.githubusercontent.com/WallScripts/backup/refs/heads/main/httpspy")
+
+Tab1:AddSection({ Name = "" })
+
+Tab1:AddButton({
+    Name = "Destroy",
+    Callback = function()
+        sigma:Destroy()
+    end    
+})
+
+-- Tab2 - Player
+
+local SpeedSlider = Tab2:AddSlider({
+    Name = "Speed",
+    Min = 0,
+    Max = 1000,
+    Default = 16,
+    Color = Color3.fromRGB(255,0,0),
+    Increment = 1,
+    ValueName = "speed",
+    Callback = function(Value)
+        if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+        end
+    end    
+})
+
+Tab2:AddButton({
+    Name = "Reset Speed",
+    Callback = function()
+        SpeedSlider:Set(16)
+    end    
+})
+
+Tab2:AddTextbox({
+    Name = "Speed",
+    Default = "16",
+    TextDisappear = false,
+    Callback = function(Value)
+        local speed = tonumber(Value)
+        if speed then
+            SpeedSlider:Set(speed)
+        end
+    end      
+})
+
+Tab2:AddSection({ Name = "" })
+
+local JumpPowerSlider = Tab2:AddSlider({
+    Name = "JumpPower",
+    Min = 0,
+    Max = 1000,
+    Default = 50,
+    Color = Color3.fromRGB(0,0,255),
+    Increment = 1,
+    ValueName = "power",
+    Callback = function(Value)
+        if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+            game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
+        end
+    end    
+})
+
+Tab2:AddButton({
+    Name = "Reset JumpPower",
+    Callback = function()
+        JumpPowerSlider:Set(50)
+    end    
+})
+
+Tab2:AddTextbox({
+    Name = "JumpPower",
+    Default = "50",
+    TextDisappear = false,
+    Callback = function(Value)
+        local jumppower = tonumber(Value)
+        if jumppower then
+            JumpPowerSlider:Set(jumppower)
+        end
+    end      
+})
+
+Tab2:AddSection({ Name = "" })
+
+local GravitySlider = Tab2:AddSlider({
+    Name = "Gravity",
+    Min = 0,
+    Max = 1000,
+    Default = 196.2,
+    Color = Color3.fromRGB(128,0,128),
+    Increment = 1,
+    ValueName = "grav",
+    Callback = function(Value)
+        workspace.Gravity = Value
+    end    
+})
+
+Tab2:AddButton({
+    Name = "Reset Gravity",
+    Callback = function()
+        GravitySlider:Set(196.2)
+    end    
+})
+
+Tab2:AddTextbox({
+    Name = "Gravity",
+    Default = "196.2",
+    TextDisappear = false,
+    Callback = function(Value)
+        local gravity = tonumber(Value)
+        if gravity then
+            GravitySlider:Set(gravity)
+        end
+    end      
+})
+
+Tab2:AddSection({ Name = "" })
+
+Tab2:AddToggle({
+    Name = "Noclip",
+    Default = false,
+    Callback = function(Value)
+        if Value then
+            Clip = false
+            wait(0.1)
+            local function NoclipLoop()
+                if Clip == false and player.Character ~= nil then
+                    for _, child in pairs(player.Character:GetDescendants()) do
+                        if child:IsA("BasePart") and child.CanCollide == true then
+                            child.CanCollide = false
+                        end
+                    end
+                end
+            end
+            Noclipping = RunService.Stepped:Connect(NoclipLoop)
+        else
+            if Noclipping then
+                Noclipping:Disconnect()
+            end
+            Clip = true
+        end
+    end    
+})
+
+local antiflingEnabled = false
+
+local antiflingConnections = {}
+local processedPlayers = {}
+
+local function processCharacterParts(character)
+    if not character or not antiflingEnabled then return end
+    for _, part in pairs(character:GetDescendants()) do
+        if part:IsA("BasePart") then
+            part.CanCollide = false
+        end
+    end
+    local descendantConnection = character.DescendantAdded:Connect(function(descendant)
+        if antiflingEnabled and descendant:IsA("BasePart") then
+            descendant.CanCollide = false
+        end
+    end)
+    return descendantConnection
+end
+
+local function setupPlayer(targetPlayer)
+    if targetPlayer == player or processedPlayers[targetPlayer] then return end
+    processedPlayers[targetPlayer] = true
+    if targetPlayer.Character then
+        local conn = processCharacterParts(targetPlayer.Character)
+        if conn then
+            antiflingConnections[targetPlayer] = antiflingConnections[targetPlayer] or {}
+            antiflingConnections[targetPlayer].descendant = conn
+        end
+    end
+    local charConnection = targetPlayer.CharacterAdded:Connect(function(character)
+        if not antiflingEnabled then return end
+        if antiflingConnections[targetPlayer] and antiflingConnections[targetPlayer].descendant then
+            antiflingConnections[targetPlayer].descendant:Disconnect()
+        end
+        local conn = processCharacterParts(character)
+        if conn then
+            antiflingConnections[targetPlayer] = antiflingConnections[targetPlayer] or {}
+            antiflingConnections[targetPlayer].descendant = conn
+        end
+    end)
+    antiflingConnections[targetPlayer] = antiflingConnections[targetPlayer] or {}
+    antiflingConnections[targetPlayer].character = charConnection
+end
+
+local function cleanupPlayer(targetPlayer)
+    if antiflingConnections[targetPlayer] then
+        for _, conn in pairs(antiflingConnections[targetPlayer]) do
+            if conn then conn:Disconnect() end
+        end
+        antiflingConnections[targetPlayer] = nil
+    end
+    processedPlayers[targetPlayer] = nil
+end
+
+local playerAddedConnection = nil
+local playerRemovingConnection = nil
+local reactivateConnection = nil
+
+Tab2:AddToggle({
+    Name = "Antifling",
+    Default = false,
+    Callback = function(Value)
+        antiflingEnabled = Value
+        
+        if antiflingEnabled then
+            for _, targetPlayer in pairs(Players:GetPlayers()) do
+                if targetPlayer ~= player then
+                    setupPlayer(targetPlayer)
+                end
+            end
+            
+            playerAddedConnection = Players.PlayerAdded:Connect(function(targetPlayer)
+                if targetPlayer ~= player then
+                    setupPlayer(targetPlayer)
+                end
+            end)
+            
+            playerRemovingConnection = Players.PlayerRemoving:Connect(function(targetPlayer)
+                cleanupPlayer(targetPlayer)
+            end)
+            
+            reactivateConnection = RunService.Heartbeat:Connect(function()
+                if antiflingEnabled then
+                    for _, targetPlayer in pairs(Players:GetPlayers()) do
+                        if targetPlayer ~= player and targetPlayer.Character then
+                            for _, part in pairs(targetPlayer.Character:GetDescendants()) do
+                                if part:IsA("BasePart") and part.CanCollide then
+                                    part.CanCollide = false
+                                end
+                            end
+                        end
+                    end
+                end
+            end)
+        else
+            if playerAddedConnection then
+                playerAddedConnection:Disconnect()
+                playerAddedConnection = nil
+            end
+            if playerRemovingConnection then
+                playerRemovingConnection:Disconnect()
+                playerRemovingConnection = nil
+            end
+            if reactivateConnection then
+                reactivateConnection:Disconnect()
+                reactivateConnection = nil
+            end
+            
+            for _, targetPlayer in pairs(Players:GetPlayers()) do
+                if targetPlayer ~= player then
+                    cleanupPlayer(targetPlayer)
+                end
+            end
+            
+            for _, targetPlayer in pairs(Players:GetPlayers()) do
+                if targetPlayer ~= player and targetPlayer.Character then
+                    for _, part in pairs(targetPlayer.Character:GetDescendants()) do
+                        if part:IsA("BasePart") then
+                            part.CanCollide = true
+                        end
+                    end
+                end
+            end
+        end
+    end    
+})
+
+sigma:Init()
