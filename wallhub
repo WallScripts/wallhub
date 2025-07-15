@@ -1,0 +1,23 @@
+local sigma = loadstring(game:HttpGet("https://raw.githubusercontent.com/WallScripts/library/refs/heads/main/Orion(pe).luau"))()
+
+local sigmawindow = sigma:MakeWindow({
+    Name = "WallHub",
+    HidePremium = false,
+    SaveConfig = false,
+    IntroEnabled = true,
+    IntroText = "blablablablebleble"
+})
+
+local Tab1 = sigmawindow:MakeTab({ Name = "Main", Icon = "rbxassetid://4483345998", PremiumOnly = false })
+local Tab2 = sigmawindow:MakeTab({ Name = "Player", Icon = "rbxassetid://4483345998", PremiumOnly = false })
+local Tab3 = sigmawindow:MakeTab({ Name = "test", Icon = "rbxassetid://4483345998", PremiumOnly = false })
+local Tab4 = sigmawindow:MakeTab({ Name = "test", Icon = "rbxassetid://4483345998", PremiumOnly = false })
+
+-- Tab1 - Scripts/Universal Hub's
+-- Tab2 - LocalPlayer
+-- Tab3 - Trolling
+-- Tab4 - Server + Infos
+
+Tab1:AddButton({ Name = "destroy", Callback = function() OrionLib:Destroy()end })
+
+OrionLib:Init()
